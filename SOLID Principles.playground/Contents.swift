@@ -156,3 +156,52 @@ penguin.fly()     // Output: This bird cannot fly; it swims instead.
 /* Here, you've created both a generic Bird object and a Penguin object, and you can call the fly() method on both without causing any issues. The program remains correct and doesn't break, even though a Penguin behaves differently when it comes to flying.
 
 This demonstrates the Liskov Substitution Principle. You can use a Penguin (a derived class) in place of a Bird (the base class) without any unexpected consequences, and the behavior remains consistent with what you'd expect from each type of bird. */
+
+// MARK: - INTERFACE SEGREGATION PRINCIPLE
+/* The Interface Segregation Principle (ISP) states that clients should not be forced to depend on interfaces they do not use. In other words, interfaces should be small, focused, and specific to the needs of the clients that use them. */
+
+/* Imagine you're building a system for managing electronic devices, and you have a generic Device interface that all devices implement. Initially, this interface has methods for both printing and scanning, which may not be relevant for all types of devices: */
+
+protocol Device {
+	func printDocument()
+	func scanDocument()
+}
+/* However, not all devices can both print and scan. Some devices may only be capable of printing, while others may only be capable of scanning. This interface forces all implementing classes to provide implementations for both methods.
+
+To adhere to the Interface Segregation Principle, you can split the Device interface into more specialized interfaces, each focused on a specific aspect of functionality: */
+
+protocol Printer {
+	func printDocument()
+}
+
+protocol Scanner {
+	func scanDocument()
+}
+
+/* Now, you have two smaller interfaces: Printer and Scanner, each with a single responsibility.
+
+You can then create classes that implement these interfaces based on their capabilities. For example: */
+
+class LaserPrinter: Printer {
+	func printDocument() {
+		// Implement printing for a laser printer
+	}
+}
+
+class FlatbedScanner: Scanner {
+	func scanDocument() {
+		// Implement scanning for a flatbed scanner
+	}
+}
+
+class AllInOnePrinterScanner: Printer, Scanner {
+	func printDocument() {
+		// Implement printing for an all-in-one device
+	}
+
+	func scanDocument() {
+		// Implement scanning for an all-in-one device
+	}
+}
+
+/* By separating the Device interface into smaller, more focused interfaces, you allow classes to conform to only the interfaces that are relevant to their specific capabilities. This adheres to the Interface Segregation Principle, as clients are no longer forced to depend on methods they do not use, and the code is more maintainable and flexible. */
