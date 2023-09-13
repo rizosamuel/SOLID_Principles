@@ -81,3 +81,48 @@ class BankAccountTransaction {
 }
 
 // In this revised example, BankAccountInfo is responsible for managing account information, and BankAccountTransaction handles financial transactions. This separation adheres to SRP, making each class focused on a single responsibility and easier to maintain and extend.
+
+// MARK: - OPEN/CLOSED PRINCIPLE
+/* The Open/Closed Principle (OCP) states that software entities (classes, modules, functions, etc.) should be open for extension but closed for modification. In other words, you should be able to extend the behavior of a class without changing its source code. */
+
+/* Let's say you have a simple order processing system with different types of orders: standard orders and discounted orders. Initially, you have a class that calculates the total cost for standard orders: */
+
+struct Product {
+	var name: String
+	var price: Double
+}
+
+class StandardOrder {
+	let items: [Product]
+	
+	init(items: [Product]) {
+		self.items = items
+	}
+	
+	func calculateTotal() -> Double {
+		return items.reduce(0) { $0 + $1.price }
+	}
+}
+
+/* In this case, StandardOrder calculates the total cost of products in the order by summing their prices. However, you receive a new requirement to handle discounted orders without modifying the existing code.
+
+To adhere to the Open/Closed Principle, you can create a new subclass, DiscountedOrder, that extends the behavior of the base class StandardOrder: */
+
+class DiscountedOrder: StandardOrder {
+	let discountPercentage: Double
+	
+	init(items: [Product], discountPercentage: Double) {
+		self.discountPercentage = discountPercentage
+		super.init(items: items)
+	}
+	
+	override func calculateTotal() -> Double {
+		let standardTotal = super.calculateTotal()
+		let discount = standardTotal * (discountPercentage / 100.0)
+		return standardTotal - discount
+	}
+}
+
+/* Now, you have a new class, DiscountedOrder, that inherits from StandardOrder and overrides the calculateTotal() method to apply the discount. You've extended the behavior without modifying the existing StandardOrder class, adhering to the Open/Closed Principle.
+
+You can use both StandardOrder and DiscountedOrder in your application without changing the original code for StandardOrder. This allows you to add more types of orders in the future by creating new subclasses, making your code more extensible and maintainable. */
