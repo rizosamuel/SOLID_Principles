@@ -126,3 +126,33 @@ class DiscountedOrder: StandardOrder {
 /* Now, you have a new class, DiscountedOrder, that inherits from StandardOrder and overrides the calculateTotal() method to apply the discount. You've extended the behavior without modifying the existing StandardOrder class, adhering to the Open/Closed Principle.
 
 You can use both StandardOrder and DiscountedOrder in your application without changing the original code for StandardOrder. This allows you to add more types of orders in the future by creating new subclasses, making your code more extensible and maintainable. */
+
+// MARK: - LISKOV SUBSTITUTION PRINCIPLE
+/* The Liskov Substitution Principle (LSP) states that objects of a derived class should be substitutable for objects of the base class without affecting the correctness of the program. In other words, if a class S is a subclass of class T, you should be able to use an object of class S wherever you use an object of class T, and the program should still work as expected. */
+
+/* Let's consider a scenario where you have a base class called Bird, and you have a derived class called Penguin. According to the LSP, a Penguin should be substitutable for a Bird without causing issues. Both Bird and Penguin can fly, but a Penguin flies differently from most birds—it swims instead of flying. */
+
+class Bird {
+	func fly() {
+		print("This bird can fly.")
+	}
+}
+
+class Penguin: Bird {
+	override func fly() {
+		print("This bird cannot fly; it swims instead.")
+	}
+}
+/* In this example, you have a base class Bird with a method fly(), which is overridden in the derived class Penguin. While most birds can fly, the Penguin class overrides the fly() method to indicate that it cannot fly and instead swims.
+
+Now, you can demonstrate the Liskov Substitution Principle by using both Bird and Penguin objects interchangeably: */
+
+let genericBird: Bird = Bird()
+let penguin: Bird = Penguin()
+
+genericBird.fly() // Output: This bird can fly.
+penguin.fly()     // Output: This bird cannot fly; it swims instead.
+
+/* Here, you've created both a generic Bird object and a Penguin object, and you can call the fly() method on both without causing any issues. The program remains correct and doesn't break, even though a Penguin behaves differently when it comes to flying.
+
+This demonstrates the Liskov Substitution Principle. You can use a Penguin (a derived class) in place of a Bird (the base class) without any unexpected consequences, and the behavior remains consistent with what you'd expect from each type of bird. */
