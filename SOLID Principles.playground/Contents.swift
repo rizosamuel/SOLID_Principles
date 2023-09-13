@@ -205,3 +205,71 @@ class AllInOnePrinterScanner: Printer, Scanner {
 }
 
 /* By separating the Device interface into smaller, more focused interfaces, you allow classes to conform to only the interfaces that are relevant to their specific capabilities. This adheres to the Interface Segregation Principle, as clients are no longer forced to depend on methods they do not use, and the code is more maintainable and flexible. */
+
+// MARK: - DEPENDENCY INVERSION PRINCIPLE
+/* The Dependency Inversion Principle (DIP) states that high-level modules should not depend on low-level modules; both should depend on abstractions. Furthermore, abstractions should not depend on details; details should depend on abstractions. This principle promotes decoupling and flexibility in software design. */
+
+/* Suppose you're building a notification system that sends messages to various destinations, such as email and SMS. Initially, you might design your system with a high-level module (NotificationService) that directly depends on low-level modules (EmailService and SMSService). */
+
+class EmailService {
+	func sendEmail(message: String, recipient: String) {
+		// Send an email
+	}
+}
+
+class SMSService {
+	func sendSMS(message: String, recipient: String) {
+		// Send an SMS
+	}
+}
+
+class NotificationService {
+	private let emailService = EmailService()
+	private let smsService = SMSService()
+
+	func sendNotification(message: String, recipient: String, viaEmail: Bool) {
+		if viaEmail {
+			emailService.sendEmail(message: message, recipient: recipient)
+		} else {
+			smsService.sendSMS(message: message, recipient: recipient)
+		}
+	}
+}
+
+/* In this design, NotificationService directly depends on the concrete implementations of EmailService and SMSService. This violates the Dependency Inversion Principle because the high-level module (NotificationService) depends on low-level details.
+
+To adhere to the Dependency Inversion Principle, you can introduce abstractions and invert the dependencies. Start by defining protocols for the notification services: */
+
+protocol MessageService {
+	func sendMessage(message: String, recipient: String)
+}
+
+class EmailService1: MessageService {
+	func sendMessage(message: String, recipient: String) {
+		// Send an email
+	}
+}
+
+class SMSService1: MessageService {
+	func sendMessage(message: String, recipient: String) {
+		// Send an SMS
+	}
+}
+/* Now, both EmailService and SMSService conform to the MessageService protocol, which represents an abstraction for sending messages.
+
+Next, modify the NotificationService class to depend on the MessageService protocol: */
+
+class NotificationService1 {
+	private let messageService: MessageService
+
+	init(messageService: MessageService) {
+		self.messageService = messageService
+	}
+
+	func sendNotification(message: String, recipient: String) {
+		messageService.sendMessage(message: message, recipient: recipient)
+	}
+}
+
+/* With this change, NotificationService depends on the MessageService abstraction, and you can inject any class that conforms to this protocol (e.g., EmailService, SMSService) without modifying NotificationService. This adheres to the Dependency Inversion Principle, as high-level and low-level modules both depend on abstractions rather than concrete implementations. This design provides greater flexibility and ease of testing, and it allows you to extend the system with new message services without affecting existing code. */
+
